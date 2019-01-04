@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Service Session{% endblock %}
+
+{% block content %}
+
+
+<h1>Serve Session</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <b>Trainer:<b/> {{ trainer.get_full_name }} <br><br>
+  <b>Client: </b> {{ client.get_full_name }} <br><br>
+  Date: {{ datetime }} <br><br>
+
+
+
+  {{ form.trainer_pin.label_tag }} {{ form.trainer_pin }} <br><br>
+    {{ form.client_pin.label_tag }} {{ form.client_pin }} <br><br>
+
+
+
+    <div class="form-group">
+      <label for="trainer-pin">Trainer Pin:</label>
+      <input type="text" class="form-control" id="trainer-pin">
+    </div>
+    <div class="form-group">
+      <label for="client-pin">Client Pin:</label>
+      <input type="password" class="form-control" id="client-pin">
+  </div>
+
+
+  <button class="btn-primary" type="submit">Serve</button>
+</form>
+
+
+
+{% endblock content %}

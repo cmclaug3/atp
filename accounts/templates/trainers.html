@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Trainers{% endblock %}
+
+{% block content %}
+
+
+
+<h1>ATP Trainers</h1>
+<br>
+
+
+
+
+
+
+
+    {% for table in trainer_client_schemes %}
+
+        <table class="table" style="width:75%">
+
+        {% for row in table %}
+
+            <tr>
+                {% if forloop.first %}
+
+                    <th><a href="{% url 'single_trainer' trainer_id=row.0.id %}">{{ row.0.user.get_full_name|upper }}</a</th>
+                    <th>{{ row.1 }}</th>
+                    <th>{{ row.2 }}</th>
+
+                {% else %}
+
+                <td><a href="{% url 'single_client' client_id=row.0.id %}"><i>{{ row.0.get_full_name }}</i></a</td>
+                <td>{{ row.1 }}</td>
+                <td>{{ row.2 }}</td>
+
+                {% endif %}
+
+            </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <br>
+
+{% endfor %}
+
+
+
+
+
+
+
+
+<!--{% for trainer in trainers %}-->
+
+    <!--<h3><a href="{% url 'single_trainer' trainer_id=trainer.id %}">{{ trainer.user.get_full_name }}</a></h3>-->
+
+
+
+    <!--<ul>-->
+
+    <!--{% for client in trainer.get_all_clients %}-->
+
+
+        <!--<li><a href="{% url 'single_client' client_id=client.id %}">{{ client.first_name }} {{ client.last_name }}</a></li>-->
+
+
+
+    <!--{% endfor %}-->
+
+    <!--</ul>-->
+
+
+<!--{% endfor %}-->
+
+
+
+{% endblock content %}

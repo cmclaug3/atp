@@ -1,0 +1,17 @@
+{% extends 'unauthenticated_base.html' %}
+
+{% block content %}
+
+<h1>Register</h1>
+
+<p>Please fill in the following fields accordingly.  If correct credentials are provided
+    you will be successfully registered.  Code will have been provided in a private email</p>
+
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-primary" type="submit">Register</button>
+</form>
+
+{% endblock content %}

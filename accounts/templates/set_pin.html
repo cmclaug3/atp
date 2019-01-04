@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+
+{% if client %}
+
+<h1>Client Set/Change Pin</h1>
+
+<h3>Client: {{ client.first_name }}</h3>
+
+{% else %}
+
+<h1>Trainer Set/Change Pin</h1>
+
+<h3>Trainer: {{ trainer.user.first_name }}</h3>
+
+{% endif %}
+
+
+
+
+<form method="post">
+  {% csrf_token %}
+
+
+    <p>{{ form.pin1.label_tag }} {{ form.pin1 }}</p>
+    <p>{{ form.pin2.label_tag }} {{ form.pin2 }}</p>
+
+    <br>
+
+
+
+  {% if client %}
+
+  <p>* This pin you have chosen will act as your signature for all sessions trained at this
+    facility with <b>{{ trainer.user.first_name }}</b>. Check the box to confirm.</p>
+
+  {% else %}
+
+  <p>* This pin you have chosen will act as your signature on all ATP paperwork. Check the box to confirm.</p>
+
+  {% endif %}
+
+
+
+
+
+
+
+
+
+
+    <p>{{ form.agree_to_use_as_signature.label_tag }} {{ form.agree_to_use_as_signature }}</p>
+    <br><br>
+
+  <button class="btn btn-primary" type="submit">Set/Change Pin</button>
+</form>
+
+
+{% endblock content %}

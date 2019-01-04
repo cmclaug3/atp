@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block head_title %}{% endblock %}</title>
+  {% block extra_head %}<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">{% endblock %}
+
+      <style>
+    body {
+        background-color: lightgrey;
+    }
+
+    #navbar_whole {
+        background-color: maroon;
+    }
+
+    nav .navbar-nav li a{
+        color: white !important;
+    }
+
+    nav .navbar-nav li a:hover{
+        background-color: darkgrey;
+    }
+
+    #navLogo {
+
+    }
+
+
+  </style>
+
+
+
+</head>
+
+{% load static %}
+
+<body>
+
+
+
+
+
+<!-- This is the start of the navigation bar at the top of the page-->
+
+
+<!-- This is the start of the navigation bar at the top of the page-->
+<header>
+    <div class="container clear-fix">
+
+        <div class= "navbar-wrapper">
+            <div class="container">
+
+                <nav class = "navbar navbar-expand-md" id="navbar_whole">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNav" aria-controls="collapsibleNave" aria-expanded="false" aria-label="Toggle navigation">
+
+                        <span class="glyphicon glyphicon-th-large"></span>
+
+
+                    </button>
+
+                    <!--Below is the top-left hand side of the screen where you usually see a company/project name and a logo-->
+                    <!--The next line sends the user back to the home page-->
+                    <a class="navbar-brand" href="{%url 'home' %}">
+                        <!--Insert the file name of your brand image below after the 'img'-->
+                         <img class="img-responsive" id="navLogo" src="/static/images/atp_fitness_logo.png" height="60" width="65">
+                    </a>
+
+                    <div class="collapse navbar-collapse" id= "collapsibleNav">
+                        <ul class="nav navbar-nav">
+                      <!--Below is where you put the rest of the links to the pages you've created. Please reference your own models
+                       in Django.-->
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'register_user' %}">First Time Registration</a>
+                            </li>
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% block body %}
+
+<br><br><br>
+
+  {% if messages %}
+    <div>
+      <strong>Messages:</strong>
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+
+
+
+
+
+<div class="container">
+    {% block content %}
+    {% endblock content %}
+</div>
+
+{% endblock body %}
+
+{% block extra_body %}
+
+{% endblock extra_body %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</body>
+</html>

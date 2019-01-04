@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Burn Session{% endblock %}
+
+{% block content %}
+
+
+<h1>Burn Session</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <b>Trainer:<b/> {{ trainer.get_full_name }} <br><br>
+  <b>Client: </b> {{ client.first_name }} <br><br>
+  {{ form.date.label_tag }} {{ form.date }} <br><br>
+  {{ form.trainer_pin.label_tag }} {{ form.trainer_pin }} <br><br>
+      {{ form.confirmation.label_tag }} {{ form.confirmation }} <br><br>
+  <button type="submit">Burn</button>
+</form>
+
+
+
+{% endblock content %}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block head_title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
+
+
+
+
+
+    <style>
+    body {
+        background-color: lightgrey;
+    }
+
+    #navbar_whole {
+        background-color: maroon;
+    }
+
+    nav .navbar-nav li a{
+        color: white !important;
+    }
+
+    nav .navbar-nav li a:hover{
+        background-color: darkgrey;
+    }
+
+    nav .navbar-nav .open .dropdown-menu {
+    background-color: pink;
+
+    }
+
+    #navLogo {
+
+    }
+
+
+  </style>
+
+
+
+
+</head>
+
+{% load static %}
+
+
+
+<!-- This is the start of the navigation bar at the top of the page-->
+<header>
+    <div class="container clear-fix">
+
+        <div class= "navbar-wrapper">
+            <div class="container">
+
+                <nav class = "navbar navbar-expand-md" id="navbar_whole">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNav" aria-controls="collapsibleNave" aria-expanded="false" aria-label="Toggle navigation">
+
+                        <span class="glyphicon glyphicon-th-large"></span>
+
+
+                    </button>
+
+                    <!--Below is the top-left hand side of the screen where you usually see a company/project name and a logo-->
+                    <!--The next line sends the user back to the home page-->
+                    <a class="navbar-brand" href="{%url 'home' %}">
+                        <!--Insert the file name of your brand image below after the 'img'-->
+                         <img class="img-responsive" id="navLogo" src="/static/images/atp_fitness_logo.png" height="60" width="65">
+                    </a>
+
+                    <div class="collapse navbar-collapse" id= "collapsibleNav">
+                        <ul class="nav navbar-nav">
+                          <!--Below is where you put the rest of the links to the pages you've created. Please reference your own models
+                           in Django.-->
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'home' %}">Home</a>
+                            </li>
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+
+
+
+
+
+
+
+
+
+                            {% if user.is_staff == True %}
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'create_client' %}">Create Client</a>
+                            </li>
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'trainers' %}">ATP Trainers</a>
+                            </li>
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'all_weeks' %}">Session Log</a>
+                            </li>
+
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Trainers
+                                <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+
+
+                                    {% if user.is_authenticated %}
+                                        {% for trainer in user.trainer.get_all_trainers %}
+
+                                      <li class="navbar-item">
+                                        <a class="nav-link" href="{% url 'single_trainer' trainer_id=trainer.id %}">{{trainer.get_full_name}}</a>
+                                      </li>
+
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                              </li>
+
+
+
+
+
+
+                            {% else %}
+                            <li class="navbar-item">
+                                <a class="nav-link" href="{% url 'clients' %}">Clients</a>
+                            </li>
+
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Clients
+                                <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+
+
+                                    {% if user.is_authenticated %}
+                                        {% for client in user.trainer.get_all_clients %}
+
+                                      <li class="navbar-item">
+                                        <a class="nav-link" href="{% url 'single_client' client_id=client.id %}">{{client.get_full_name}}</a>
+                                      </li>
+
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                              </li>
+
+
+
+
+
+
+
+                            {% endif %}
+
+
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Settings
+                                <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                  <li class="navbar-item">
+                                    <a class="nav-link" href="{% url 'set_pin' %}">Your Pin</a>
+                                  </li>
+                                </ul>
+                              </li>
+
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+
+
+
+<body>
+{% block body %}
+
+<br><br>
+
+  {% if messages %}
+    <div>
+      <strong>Messages:</strong>
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+
+
+
+
+
+
+
+<!--<div class="float-right">-->
+    <!--<i><h5>Logged in as {{ user.get_full_name }}</h5></i>-->
+<!--</div>-->
+
+
+
+
+<div class="container">
+    {% block content %}
+    {% endblock content %}
+</div>
+
+{% endblock body %}
+{% block extra_body %}
+{% endblock extra_body %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+</body>
+</html>

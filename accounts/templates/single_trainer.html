@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Single Trainer{% endblock %}
+
+{% block content %}
+
+
+<h1>{{ trainer.user.get_full_name }}</h1>
+
+<br>
+
+<p><b>Trainer Since:</b> {{ trainer.user.time_stamp|date:"m/d/y" }}</p>
+
+<p><b>Pay Period:</b> {{ starting_friday }} - {{ ending_thursday }}</p>
+
+<p><b>This Weeks Sessions:</b> {{ this_week_count }}</p>
+
+<p><b>This Months Sessions:</b> {{ this_month_count }}</p>
+
+<p><b>Current Weekly Payment:</b> ${{ cost_for_week }}</p>
+
+<p><b>Overtime:</b> {% if this_month_count > 80 %} Yes {% else %} No {% endif %}</p>
+
+
+
+<br>
+
+<h3>Sessions History</h3>
+
+{% if all_sessions.count == 0 %}
+
+<p>No Sessions Yet...</p>
+
+{% else %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date/Time</th>
+            <th>Client</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+
+    {% for session in all_sessions %}
+
+    <tr>
+        <td>{{ session.date_time|date:"D P   m/d/y" }}</td>
+        <td>{{ session.client }}</td>
+        <td>{{ session.type }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endif %}
+
+
+
+
+<!--<br>-->
+
+<!--<p>SERVICED SESSIONS: {{ serviced_sessions }}</p>-->
+
+<!--<br>-->
+
+
+
+<!--<p>SESSION HISTORY</p>-->
+
+<!--{% for session in session_history %}-->
+
+<!--<p>{{ session.date }} &ndash;&gt; {{ session.type }}</p>-->
+
+<!--{% endfor %}-->
+
+
+
+
+{% endblock content %}

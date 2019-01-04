@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Single Client{% endblock %}
+
+{% block content %}
+
+
+
+
+<h1>{{ client.get_full_name }}</h1>
+
+<p><b>Trainer:</b> {{ client.trainer.get_full_name }}</p>
+
+<p><b>Client Pin:</b> {{ client.pin }}</p>
+
+<p><b>This Weeks Sessions:</b> {{ client_week_count }}</p>
+
+<p><b>This Months Sessions:</b> {{ client_month_count }}</p>
+
+
+
+
+
+<br><br>
+
+
+
+
+<h3>SESSION HISTORY</h3>
+
+{% if session_history.count == 0 %}
+
+<p>No Sessions Yet...</p>
+
+{% else %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date/Time</th>
+            <th>Trainer</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+
+    {% for session in session_history %}
+
+    <tr>
+        <td>{{ session.date_time|date:"D P   m/d/y" }}</td>
+        <td>{{ session.trainer.get_full_name }}</td>
+        <td>{{ session.type }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endif %}
+
+
+
+<br>
+
+
+
+{% if user.is_staff == False %}
+
+<a href="{% url 'serve_session' client_id=client.id %}">Serve Session</a>
+<br>
+<a href="{% url 'burn_session' client_id=client.id %}">Burn Session</a>
+<br>
+<a href="{% url 'set_client_pin' client_id=client.id %}">Set Client Pin</a>
+<br>
+
+{% endif %}
+
+
+
+{% endblock content %}

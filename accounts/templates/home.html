@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+
+<h1>HOMEPAGE</h1>
+
+<p>welcome to the ATP Trainer portal {{ user.get_short_name }}</p>
+<p><b>Total Sessions Served:</b> {{ total_sessions_served }}</p>
+
+<br>
+
+<p>are you staff: {{ user.is_staff }}</p>
+<p>are you superuser: {{ user.is_admin }}</p>
+<p><b>your pin:</b> {{ user.trainer.pin }}</p>
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% if user.is_staff == False %}
+
+<h2>Session History?</h2>
+
+{% endif %}
+
+
+
+
+
+
+{% if user.is_staff == True %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6">
+            <h1>STATS</h1>
+            <p><b>Current Pay Period:</b> {{ starting_friday }} - {{ ending_thursday }}</p>
+            <p><b>Sessions Today:</b> {{ sessions_today }}</p>
+            <p><b>Sessions This Week:</b> {{ total_sessions_this_week }}</p>
+            <p><b>Sessions This Month:</b> {{ total_sessions_this_month }}</p>
+            <p><b>Weeks Dues To Date:</b> ${{ week_dues }}</p>
+        </div>
+        <div class="col-xs 6 col-sm-6">
+            <h1>TRAINERS</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Trainer</th>
+                        <th>WTD</th>
+                        <th>MTD</th>
+                    </tr>
+                </thead>
+
+                {% for employee in trainer_scheme %}
+                <tr>
+                    <td>{{ employee.0.user.get_full_name }}</td>
+                    <td>{{ employee.1 }}</td>
+                    <td>{{ employee.2 }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+
+{% endblock content %}
+
+

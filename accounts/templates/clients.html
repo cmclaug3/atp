@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Clients{% endblock %}
+
+{% block content %}
+
+
+
+
+
+{% if user.is_staff == False %}
+
+<h2>Clients</h2>
+<br>
+
+
+
+
+<table class="table">
+    <thead>
+        <th>Client</th>
+        <th>WTD</th>
+        <th>MTD</th>
+    </thead>
+    <tbody>
+
+        {% for client in clients_scheme %}
+
+        <tr>
+            <td><a href="{% url 'single_client' client_id=client.0.id %}">{{ client.0.get_full_name }}</a></td>
+            <td>{{ client.1 }}</td>
+            <td>{{ client.2 }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+</table>
+
+
+
+
+
+<!--{% for client in trainers_clients %}-->
+
+<!--<a href="{% url 'single_client' client_id=client.id %}">{{ client.first_name }} {{ client.last_name }}</p>-->
+
+<!--{% empty %}-->
+
+<!--<p>No Clients yet..</p>-->
+
+
+<!--{% endfor %}-->
+
+{% endif %}
+
+    {% endblock content %}

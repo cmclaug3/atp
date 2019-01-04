@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}Weeks Report{% endblock %}
+
+{% block content %}
+
+
+<h1>Weeks Report</h1>
+
+
+{% for week_sessions in per_week_sessions %}
+
+   <p> {% for session in week_sessions %}
+       {{ session.trainer.get_full_name }} and {{ session.client.get_full_name }}</p>
+    {% endfor %}
+
+
+{% endfor %}
+
+
+
+
+
+<!--{% for week in all_weeks %}-->
+
+<!--<p>{{ week.0|date:"m/d/y" }} - {{ week.6|date:"m/d/y" }}</p>-->
+
+<!--<p>{{ week.count }}</p>-->
+
+
+
+<!--{% endfor %}-->
+
+
+
+
+
+{% endblock content %}
