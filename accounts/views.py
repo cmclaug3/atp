@@ -8,11 +8,11 @@ from django.urls import reverse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
-from accounts.tools import cost_for_week, cost_for_month, get_present_week
-from session.test_tools import get_all_weeks, get_history_from_week
+from accounts.tools import cost_for_week, cost_for_month, get_present_week, total_dues_for_week
+from session.test_tools import get_all_weeks, get_history_from_week, get_final_session_count
 
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 
@@ -63,13 +63,15 @@ def home(request):
         'total_sessions_this_week': total_sessions_this_week,
         'total_sessions_this_month': total_sessions_this_month,
 
-        'trainer_scheme': sorted(trainer_scheme, key=lambda x: x[1], reverse=True),
+        'trainer_scheme': sorted(trainer_scheme, key=lambda x: x[2], reverse=True),
         'week_dues': sum(week_dues_list),
 
         'sessions_today': sessions_today,
 
         'starting_friday': starting_friday,
-        'ending_thursday': ending_thursday
+        'ending_thursday': ending_thursday,
+
+        'final_session_count': Session.objects.all().count(),
     }
     return render(request, 'home.html', context)
 
@@ -351,6 +353,7 @@ class SingleClientView(View):
 
         # Query for session history for Trainer by Trainer only with Specific client
         session_history = Session.objects.filter(trainer=trainer, client=client).order_by('-date_time')
+
         # Query for session history for Staff including ALL sessions regardless of trainer
         if request.user.is_staff == True:
             session_history = Session.objects.filter(client=client).order_by('-date_time')
@@ -378,29 +381,39 @@ class TrainerView(View):
     def get(self, request):
 
         trainers = Trainer.objects.filter(user__is_staff=False)
+        trainers = sorted(trainers, key=lambda x: (x.month_count(), x.week_count()), reverse=True)
         trainer_client_schemes = []
 
-        for trainer in trainers:
 
-            trainer_week_count = Session.week.filter(trainer=trainer).count()
-            trainer_month_count = Session.month.filter(trainer=trainer).count()
-            trainers_clients = Client.objects.filter(trainer=trainer)
+        ###### OVERKILL FROM PREVIOUS PROCESS OF GETTING DATA FOR TEMPLATE
 
-            trainer_scheme = [trainer, trainer_week_count, trainer_month_count]
-            clients_scheme = []
+        # for trainer in trainers:
+        #     trainer_week_count = Session.week.filter(trainer=trainer).count()
+        #     trainer_month_count = Session.month.filter(trainer=trainer).count()
+        #     trainers_clients = Client.objects.filter(trainer=trainer)
+        #
+        #     trainer_scheme = [trainer, trainer_week_count, trainer_month_count]
+        #     clients_scheme = []
+        #
+        #     for client in trainers_clients:
+        #         client_week_count = Session.week.filter(client=client).count()
+        #         client_month_count = Session.month.filter(client=client).count()
+        #         scheme = [client, client_week_count, client_month_count]
+        #         clients_scheme.append(scheme)
+        #
+        #
+        #
+        #     # Sort the clients schemes
+        #     clients_scheme.insert(0, trainer_scheme)
+        #     trainer_client_schemes.append(clients_scheme)
 
-            for client in trainers_clients:
-                client_week_count = Session.week.filter(client=client).count()
-                client_month_count = Session.month.filter(client=client).count()
-                scheme = [client, client_week_count, client_month_count]
-                clients_scheme.append(scheme)
 
-            clients_scheme.insert(0, trainer_scheme)
-            trainer_client_schemes.append(clients_scheme)
+
+
 
         context = {
             'trainers': trainers,
-            'trainer_client_schemes': trainer_client_schemes,
+            # 'trainer_client_schemes': trainer_client_schemes,
         }
         return render(request, 'trainers.html', context)
 
@@ -448,21 +461,44 @@ class SingleTrainerView(View):
 
 
 
+
+
 class AllWeeksView(View):
     def get(self, request):
+
+        # list of days (datetimes) in particular week (pay period) for each week from earliest to most recent session
         all_weeks = get_all_weeks()
-        trainers = Trainer.objects.all().first().get_all_trainers()
+        print(all_weeks)
 
-        per_week_sessions = []
+        # list of a list each week containing individual dictionaries of each days sessions on each day ***************
+        list_of_weeks = []
 
+        week_counter = len(all_weeks)
+
+        trainers = Trainer.objects.filter(user__is_staff=False)
+
+        # Looping over each list of days in week and computing
         for week in all_weeks:
-            per_week_sessions.append([get_history_from_week(week=week)])
+            first_day = week[0]
+            last_day = week[6] + timedelta(days=1)
+            session_count = Session.objects.filter(date_time__gte=first_day).filter(date_time__lt=last_day).count()
 
+            week_dues_list_for_each_trainer = []
+
+            for trainer in trainers:
+                week_dues_list_for_each_trainer.append(trainer.week_dues(week))
+
+            week_dues = sum(week_dues_list_for_each_trainer)
+
+            list_of_weeks.append([week, week_counter, session_count, week_dues])
+
+            week_counter -= 1
 
 
         context = {
             'all_weeks': all_weeks,
-            'per_week_sessions': per_week_sessions,
+            'list_of_weeks': list_of_weeks,
+
         }
         return render(request, 'weeks_report.html', context)
 
@@ -471,5 +507,35 @@ class AllWeeksView(View):
 
 
 
+class SingleWeekView(View):
+    def get(self, request, week_num):
 
+        week_index = abs(week_num-len(get_all_weeks()))
+        week = get_all_weeks()[week_index]
+
+        first_day = week[0]
+        last_day = week[6] + timedelta(days=1)
+
+        week_sessions = Session.objects.filter(date_time__gte=first_day).filter(date_time__lt=last_day)
+
+        by_day = get_history_from_week(week)
+
+        context = {
+            'week_number': week_num,
+            'total_sessions': week_sessions.count(),
+            'week': week,
+            'by_day': by_day,
+            'trainers': Trainer.objects.filter(user__is_staff=False),
+
+        }
+        return render(request, 'single_week.html', context)
+
+
+
+
+    '''
+    IDEAS for single week view
+        send week index for particular week in all_weeks through SingleWeekView url as week_number
+        use to display only sessions for that week by getting week back out from all_weeks (all_weeks[week_number])
+    '''
 

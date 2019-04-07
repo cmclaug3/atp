@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Single Week View{% endblock %}
+
+{% block content %}
+
+
+
+<h1>Week {{week_number}}</h1>
+<h2>{{ by_day.0.0.date_time|date:"m/d/y" }} - {{ by_day.6.0.date_time|date:"m/d/y" }}</h2>
+<h2>Total Sessions: {{ total_sessions }}</h2>
+
+<br><br>
+
+
+
+    <table class="table" style="width:100%">
+             <tr>
+                 <th>Name</th>
+                 <th>Week</th>
+                 <th>Dues</th>
+             </tr>
+
+        {% for trainer in trainers %}
+
+            <tr>
+                <th>{{ trainer.user.get_full_name|upper }}</a</th>
+                <th>{{ trainer.week_count }}</th>
+                <th>{{ trainer.month_count }}</th>
+            <tr>
+
+            {% for client in trainer.get_all_clients %}
+            <tr>
+                    <td>{{ client.get_full_name }}</a></td>
+                    <td>{{ client.week_count }}</td>
+                    <td></td>
+
+            </tr>
+
+
+            {% endfor %}
+
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+
+    {% endfor %}
+
+
+</table>
+
+<br><br><br>
+
+
+
+
+
+    {% for day in by_day %}
+
+    {% if day.count == 0 %}
+
+    <p>No Sessions this day</p>
+
+    {% else %}
+
+    <h2>{{ day.0.date_time|date:"l m/d/y" }}</h2>
+    <h4>Sessions: {{ day.count }}</h4>
+
+    <table class="table">
+
+    <tr>
+        <th>Trainer</th>
+        <th>Client</th>
+        <th>Time</th>
+    </tr>
+
+        {% for session in day %}
+
+        <tr>
+            <td>{{ session.trainer }}</td>
+            <td>{{ session.client }}</td>
+            <td>{{ session.date_time|date:"P" }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <br>
+
+    {% endif %}
+
+    {% endfor %}
+
+
+
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+<!--<h1>Week History - #{{ week_number }}</h1>-->
+
+<!--<h2>{{ week.0|date:"m/d/y" }} - {{ week.6|date:"m/d/y" }}</h2>-->
+
+<!--<h3>Total Sessions: {{ total_sessions }}</h3>-->

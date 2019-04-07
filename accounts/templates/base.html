@@ -24,15 +24,15 @@
 
     nav .navbar-nav li a{
         color: white !important;
+        <!--background-color: green;-->
     }
 
     nav .navbar-nav li a:hover{
         background-color: darkgrey;
     }
 
-    nav .navbar-nav .open .dropdown-menu {
-    background-color: pink;
-
+    #trainers li a, #clients li a {
+        color: black;
     }
 
     #navLogo {
@@ -54,15 +54,13 @@
 <!-- This is the start of the navigation bar at the top of the page-->
 <header>
     <div class="container clear-fix">
-
         <div class= "navbar-wrapper">
             <div class="container">
+                <nav class = "navbar navbar-fixed-md" id="navbar_whole">
 
-                <nav class = "navbar navbar-expand-md" id="navbar_whole">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNav" aria-controls="collapsibleNave" aria-expanded="false" aria-label="Toggle navigation">
 
                         <span class="glyphicon glyphicon-th-large"></span>
-
 
                     </button>
 
@@ -86,12 +84,6 @@
 
 
 
-
-
-
-
-
-
                             {% if user.is_staff == True %}
                             <li class="navbar-item">
                                 <a class="nav-link" href="{% url 'create_client' %}">Create Client</a>
@@ -103,17 +95,35 @@
                                 <a class="nav-link" href="{% url 'all_weeks' %}">Session Log</a>
                             </li>
 
+
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Trainers
-                                <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Trainers <span class="caret"></span> </a>
+                                <ul class="dropdown-menu" id="trainers">
 
 
                                     {% if user.is_authenticated %}
-                                        {% for trainer in user.trainer.get_all_trainers %}
+                                    {% for trainer in user.trainer.get_all_trainers %}
 
                                       <li class="navbar-item">
                                         <a class="nav-link" href="{% url 'single_trainer' trainer_id=trainer.id %}">{{trainer.get_full_name}}</a>
+                                      </li>
+
+                                    {% endfor %}
+                                    {% endif %}
+                                </ul>
+                              </li>
+
+
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Clients <span class="caret"></span></a>
+                                <ul class="dropdown-menu" id="clients">
+
+
+                                    {% if user.is_authenticated %}
+                                        {% for client in user.trainer.get_whole_clients %}
+
+                                      <li class="navbar-item">
+                                        <a class="nav-link" href="{% url 'single_client' client_id=client.id %}">{{client.get_full_name}}</a>
                                       </li>
 
                                         {% endfor %}
@@ -122,18 +132,14 @@
                               </li>
 
 
-
-
-
-
                             {% else %}
+
                             <li class="navbar-item">
                                 <a class="nav-link" href="{% url 'clients' %}">Clients</a>
                             </li>
 
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Clients
-                                <span class="caret"></span></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Clients <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
 
 
@@ -147,27 +153,18 @@
                                         {% endfor %}
                                     {% endif %}
                                 </ul>
-                              </li>
-
-
-
-
-
-
+                            </li>
 
                             {% endif %}
 
-
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Settings
-                                <span class="caret"></span></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Settings <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                   <li class="navbar-item">
                                     <a class="nav-link" href="{% url 'set_pin' %}">Your Pin</a>
                                   </li>
                                 </ul>
-                              </li>
-
+                            </li>
                         </ul>
                     </div>
                 </nav>

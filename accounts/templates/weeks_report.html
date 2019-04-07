@@ -9,18 +9,46 @@
 
 <h1>Weeks Report</h1>
 
+<br>
 
-{% for week_sessions in per_week_sessions %}
 
-   <p> {% for session in week_sessions %}
-       {{ session.trainer.get_full_name }} and {{ session.client.get_full_name }}</p>
-    {% endfor %}
 
+
+
+
+<!--<div class="container">-->
+    <!--<div class="row">-->
+    <!--<div class="col-xs-12 col-sm-8">-->
+
+<table class="table" style="width:100%">
+    <tr>
+        <th>Week Number</th>
+        <th>Dates</th>
+        <th>Total Sessions</th>
+        <th>Dues</th>
+
+    </tr>
+
+
+
+{% for week_list in list_of_weeks %}
+
+    <tr>
+        <td>{{ week_list.1 }}</td>
+        <td><a href="{% url 'single_week' week_num=week_list.1 %}">{{ week_list.0.0|date:"m/d/y" }} - {{ week_list.0.6|date:"m/d/y" }}</a></td>
+        <td>{{ week_list.2 }}</td>
+        <td>${{ week_list.3 }}</td>
+    </tr>
 
 {% endfor %}
 
+</table>
 
+    <!--</div>-->
+<!--</div>-->
+<!--</div>-->
 
+        <!--{{ week }}-->
 
 
 <!--{% for week in all_weeks %}-->

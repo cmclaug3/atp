@@ -1,9 +1,42 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+from datetime import datetime, timedelta
 
 
 
+def get_present_week(other_date=None):
+    '''
+    return list of 7 day week of current pay period (friday-thursday)
+    optional argument other_date is a datetime day and will give the pay period that day falls in
+    '''
+    if other_date == None:
+        today = datetime.today()
+    else:
+        today = other_date
+    formatted_day = datetime(today.year, today.month, today.day)
+    today_num = formatted_day.weekday()
+
+    # Get friday of the given week (first day of pay period)
+
+    if today_num == 4:
+        starting_friday = formatted_day
+
+    elif today_num < 4:
+        starting_friday = formatted_day - timedelta(days=today_num + 3)
+
+    elif today_num > 4:
+        starting_friday = formatted_day - timedelta(days=today_num - 4)
+
+    # Create list of 7 day week starting from that Friday
+
+    week = []
+
+    for week_days in range(7):
+        week.append(starting_friday)
+        starting_friday += timedelta(days=1)
+
+    return week
 
 
 
@@ -108,18 +141,62 @@ class Trainer(models.Model):
     def get_all_trainers(self):
         return Trainer.objects.filter(user__is_staff=False)
 
-    # def month_dues(self):
-    #     month_sessions = Session.month.filter(trainer=self)
-    #     if month_sessions <= 80:
-    #         dues = month_sessions * 20
-    #     else:
-    #         undertime = 80 * 20
-    #         overtime = 15 * (month_sessions - 80)
-    #         dues = undertime + overtime
-    #     return dues
+    def get_whole_clients(self):
+        return Client.objects.all()
 
 
 
+
+
+
+
+
+
+    def month_count(self, month_num=datetime.today().month, year_num=datetime.today().year):
+        trainer_month_sessions = self.session_set.filter(date_time__month=month_num,
+                                                            date_time__year=year_num,)
+        month_count = trainer_month_sessions.count()
+        return month_count
+
+
+    def week_count(self, week=get_present_week()):
+        first_day = week[0]
+        last_day = week[6] + timedelta(days=1)
+        session_count = self.session_set.filter(date_time__gte=first_day).filter(date_time__lt=last_day).count()
+        return session_count
+
+
+
+    def month_dues(self, month_num, year_num):
+        '''
+
+        Not sure if i need this
+
+        '''
+        month_count = self.month_count(month_num, year_num)
+        if month_count <= 80:
+            dues = month_count * 20
+        else:
+            undertime = 80 * 20
+            overtime = 15 * (month_count - 80)
+            dues = undertime + overtime
+        return dues
+
+
+
+    def week_dues(self, week):
+        week_count = self.week_count(week)
+        month_count = self.month_count(week[0].month, week[0].year)
+        if month_count <= 80:
+            dues = week_count * 20
+        elif month_count - week_count > 80:
+            dues = week_count * 15
+        else:
+            ot_sessions = month_count - 80
+            undertime = 20 * (week_count - ot_sessions)  # this needs a fix
+            overtime = 15 * ot_sessions
+            dues = undertime + overtime
+        return dues
 
 
 
@@ -146,6 +223,23 @@ class Client(models.Model):
 
 
 
+    def month_count(self, month_num=datetime.today().month, year_num=datetime.today().year):
+        client_month_sessions = self.session_set.filter(date_time__month=month_num,
+                                                            date_time__year=year_num,)
+        month_count = client_month_sessions.count()
+        return month_count
+
+
+    def week_count(self, week=get_present_week()):
+        first_day = week[0]
+        last_day = week[6] + timedelta(days=1)
+        session_count = self.session_set.filter(date_time__gte=first_day).filter(date_time__lt=last_day).count()
+        return session_count
+
+
+
+
+
 USER_TYPES = (
     ('trainer', 'Trainer'),
     ('staff', 'Staff'),
@@ -165,4 +259,8 @@ class PreSetAuthorizedUser(models.Model):
 
 
 
+
+"""
+emmetcoding
+"""
 

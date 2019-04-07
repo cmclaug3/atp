@@ -11,6 +11,8 @@ from .models import Session
 from datetime import datetime
 from django.utils import timezone
 
+from .test_tools import get_all_weeks, get_present_week
+
 
 
 
@@ -35,6 +37,10 @@ class ServeSessionView(View):
         form = ServeSessionForm(request.POST)
         trainer = Trainer.objects.get(user=request.user)
         datetime = timezone.now()
+
+        all_weeks = get_all_weeks()
+
+
         if not form.is_valid():
             context = {
                 'client': client,
@@ -53,6 +59,12 @@ class ServeSessionView(View):
             if client_pin == client.pin:
                 new_session = Session.objects.create(trainer=trainer, client=client, type='Served')
                 new_session.date_time = timezone.now()
+                # present_week = get_present_week(new_session.date_time)
+                # index = all_weeks.index(present_week)
+                # new_session.week = index
+
+
+
                 messages.add_message(request, messages.SUCCESS, 'You have successfully served a session with {}'.format(client.first_name))
                 return redirect(reverse('home'))
             else:

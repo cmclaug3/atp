@@ -10,7 +10,7 @@
 <h1>HOMEPAGE</h1>
 
 <p>welcome to the ATP Trainer portal {{ user.get_short_name }}</p>
-<p><b>Total Sessions Served:</b> {{ total_sessions_served }}</p>
+<p><b>Total Sessions Served:</b> {{ final_session_count }}</p>
 
 <br>
 
@@ -57,6 +57,8 @@
             <p><b>Sessions This Month:</b> {{ total_sessions_this_month }}</p>
             <p><b>Weeks Dues To Date:</b> ${{ week_dues }}</p>
         </div>
+
+
         <div class="col-xs 6 col-sm-6">
             <h1>TRAINERS</h1>
             <table class="table">

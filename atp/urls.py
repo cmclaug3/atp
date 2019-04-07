@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from accounts.views import (RegisterAuthorizedUserView, SetNewUserPasswordView, home, CreateClientView,\
-    SingleClientView, SetPinView, SetClientPinView, ClientView, TrainerView, SingleTrainerView, AllWeeksView)
+    SingleClientView, SetPinView, SetClientPinView, ClientView, TrainerView, SingleTrainerView, AllWeeksView, SingleWeekView)
 
 
 urlpatterns = [
@@ -35,4 +35,6 @@ urlpatterns = [
     path('trainers', TrainerView.as_view(), name='trainers'),
     path('single_trainer/<int:trainer_id>', SingleTrainerView.as_view(), name='single_trainer'),
     path('all_weeks', AllWeeksView.as_view(), name='all_weeks'),
+    path('single_week/<int:week_num>', SingleWeekView.as_view(), name='single_week'),
 ]
+

@@ -39,18 +39,18 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Date/Time</th>
+            <th>Date</th>
+            <th>Time</th>
             <th>Trainer</th>
-            <th>Type</th>
         </tr>
     </thead>
 
     {% for session in session_history %}
 
     <tr>
-        <td>{{ session.date_time|date:"D P   m/d/y" }}</td>
+        <td>{{ session.date_time|date:"m/d/y" }}</td>
+        <td>{{ session.date_time|date:"D P" }}</td>
         <td>{{ session.trainer.get_full_name }}</td>
-        <td>{{ session.type }}</td>
     </tr>
 
     {% endfor %}

@@ -8,18 +8,20 @@ from accounts.tools import get_present_week
 
 
 
-RANDOM_SESSION_AMOUNT_HIGH = 220
+
+RANDOM_SESSION_AMOUNT_HIGH = 480
 START_DATE = datetime(2018, 1, 1)
-END_DATE = datetime(2018, 12, 31)
-
-
-def create_trainer_list():
-    return Trainer.objects.filter(user__is_staff=False)
+END_DATE = datetime(2019, 3, 26)
 
 
 def create_trainer_clients_list():
+    '''
+
+    Return a list of lists of a trainer (non-staff) followed by all of their clients
+
+    '''
     trainer_client_list = []
-    for trainer in create_trainer_list():
+    for trainer in Trainer.objects.filter(user__is_staff=False):
         client_list = list(Client.objects.filter(trainer=trainer))
         client_list.insert(0, trainer)
         trainer_client_list.append(client_list)
@@ -27,6 +29,11 @@ def create_trainer_clients_list():
 
 
 def random_date():
+    '''
+
+    Returns a random date between hard coded start and end dates above
+
+    '''
     start = START_DATE
     end = END_DATE
     delta = end - start
@@ -54,6 +61,13 @@ def create_sample_data():
 
 
 def get_all_weeks():
+    '''
+
+    list of days in particular week (pay period) for each week from earliest to most recent session
+
+    '''
+
+
     earliest_session = Session.objects.all().order_by('date_time').first()
     latest_session = Session.objects.all().order_by('date_time').last()
 
@@ -76,14 +90,30 @@ def get_all_weeks():
 
 
 def get_history_from_week(week):
+    '''
+
+    all sessions from a particular week (list of 7 days in week/pay period)
+
+    '''
     sessions = []
     for day in week:
         day_seshes = Session.objects.filter(date_time__month=day.month,
                                             date_time__day=day.day,
-                                            date_time__year=day.year)
+                                            date_time__year=day.year).order_by('date_time')
 
         sessions.append(day_seshes)
     return sessions
+
+def get_final_session_count():
+    weeks = get_all_weeks()
+    count = 0
+    for week in weeks:
+        day_sessions = get_history_from_week(week)
+        for day in day_sessions:
+            count += len(day)
+    return count
+
+
 
 
 
@@ -160,6 +190,23 @@ login to site - overview
         
         Trainer/Client DetailView Session history table
             Only show current pay period with options to View last week/month/year/all
+            
+            
+            
+            
+    QUESTIONS FOR ALVIN
+    
+        when i createsuperuser it doesnt create my first and last name i have to do that manually in the admin
+        
+        what to do with deployment
+        
+        background color for navarbar dropdown menu
+        
+        using html buttons for actions in templates
+        
+        
+        
+        
         
         
             

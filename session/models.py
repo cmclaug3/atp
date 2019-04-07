@@ -9,17 +9,83 @@ from accounts.tools import get_present_week
 
 
 
+
+
+
+class Week(models.Model):
+    start_day = models.DateTimeField()
+    end_day = models.DateTimeField()
+
+    def __str__(self):
+        return '{} - {}'.format()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class SessionManager(models.Manager):
+    '''
+    takes a list of days (week/pay period) and returns all sessions trained in that week
+    '''
     def get_history_from_week(self, week):
-        sessions = []
+        sessions = Trainer.objects.none()
         for day in week:
             day_seshes = Session.objects.filter(date_time__month=day.month,
                                                 date_time__day=day.day,
                                                 date_time__year=day.year)
 
-            sessions.append(day_seshes)
+            sessions = sessions | day_seshes
         return sessions
 
+
+
+
+
+# def week_factory(week):
+#     pass
+#
+#
+#     class RealWeekManager(models.Manager):
+#
+#         the_week = week
+#
+#         def get_queryset(self):
+#             all_weeks = all_weeks
+#
+#
+#
+#
+#             Session.objects.filter(date_kwargs**)
+
+
+
+
+            # query_set = Session.objects.none()
+            # for day in the_week:
+            #     query_set = query_set | Session.objects.filter(date_time__month=day.month,
+            #                                     date_time__day=day.day,
+            #                                     date_time__year=day.year)
+
+
+
+
+
+
+# class RealWeekManager(models.Manager):
+#     def get_queryset(self):
 
 
 
@@ -135,10 +201,16 @@ class Session(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_time = models.DateTimeField(default=timezone.now, blank=True, null=True)
     type = models.CharField(max_length=25, choices=SESSION_TYPE_CHOICES, blank=True, null=True)
+    week = models.ForeignKey(Week, on_delete=models.CASCADE, blank=True, null=True)
 
     objects = SessionManager()
     week = WeekSessionManager()
     month = MonthSessionManager()
 
+
     def __str__(self):
         return self.trainer.get_full_name()
+
+
+
+

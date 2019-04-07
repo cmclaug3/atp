@@ -38,18 +38,18 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Date/Time</th>
+            <th>Date</th>
+            <th>Time</th>
             <th>Client</th>
-            <th>Type</th>
         </tr>
     </thead>
 
     {% for session in all_sessions %}
 
     <tr>
-        <td>{{ session.date_time|date:"D P   m/d/y" }}</td>
+        <td>{{ session.date_time|date:"m/d/y" }}</td>
+        <td>{{ session.date_time|date:"D P" }}</td>
         <td>{{ session.client }}</td>
-        <td>{{ session.type }}</td>
     </tr>
 
     {% endfor %}
